@@ -5,8 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:YouTube_Downloader"
         mc:Ignorable="d"
-        Title="YouTube Downloader" Height="450" Width="800">
+        Title="YouTube Downloader" Height="400" Width="600"
+        ResizeMode="NoResize">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="120" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height="100" />
+        </Grid.RowDefinitions>
+
+        <TextBox Grid.ColumnSpan="5" Grid.Row="0" Width="464" Height="35" HorizontalAlignment="Center" 
+                 VerticalAlignment="Center" VerticalContentAlignment="Center" TextAlignment="Center"
+                 />
+
+        <CheckBox />
 
     </Grid>
 </Window>
