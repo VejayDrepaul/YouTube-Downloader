@@ -9,11 +9,9 @@
         ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="120" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="180" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="180" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
@@ -22,11 +20,28 @@
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
 
-        <TextBox Grid.ColumnSpan="5" Grid.Row="0" Width="464" Height="35" HorizontalAlignment="Center" 
-                 VerticalAlignment="Center" VerticalContentAlignment="Center" TextAlignment="Center"
-                 />
+        <TextBox x:Name="url" Grid.ColumnSpan="5" Grid.Row="0" Width="464" Height="35" 
+                     HorizontalAlignment="Center" VerticalAlignment="Center" 
+                     VerticalContentAlignment="Center" HorizontalContentAlignment="Center" 
+                     FontSize="15"/>
 
-        <CheckBox />
+        <Label Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Center" Margin="0,89,0,18" >
+            Select what you want to download:
+        </Label>
 
+        <RadioButton x:Name="video_radiobuttton" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" 
+                     VerticalAlignment="Center">
+            Video
+        </RadioButton>
+        
+        <RadioButton x:Name="audio_radiobutton" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" 
+                     VerticalAlignment="Center">
+            Audio
+        </RadioButton>
+        
+        <RadioButton x:Name="both_radiobutton" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" 
+                     VerticalAlignment="Center">
+            Audio and Video
+        </RadioButton>
     </Grid>
 </Window>
