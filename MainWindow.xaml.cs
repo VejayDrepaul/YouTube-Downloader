@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
 
 namespace YouTube_Downloader
 {
@@ -23,6 +25,25 @@ namespace YouTube_Downloader
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void download_button_Click(object sender, RoutedEventArgs e)
+        {
+            string link = url.Text;
+            var youtube = new YoutubeClient();
+            var audio = await youtube.Videos.GetAsync(link);
+            string title = audio.Title;
+
+
+            if (audio_radiobutton.IsChecked == true)
+            {
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(link);
+                var streamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
+                var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
+                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"test/{title}.{streamInfo.Container}");
+            }
+
+            MessageBox.Show("Download Complete");
         }
     }
 }
