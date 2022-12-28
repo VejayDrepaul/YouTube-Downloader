@@ -16,8 +16,8 @@ using System.Windows.Shapes;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 using FFMpegCore;
-using FFMpegCore.Enums;
-
+using System.Threading;
+//https://www.youtube.com/watch?v=afIJop8PriY
 namespace YouTube_Downloader
 {
     /// <summary>
@@ -34,8 +34,12 @@ namespace YouTube_Downloader
         {
             string link = url.Text;
             var youtube = new YoutubeClient();
-            var audio = await youtube.Videos.GetAsync(link);
-            string title = audio.Title;
+            var video = await youtube.Videos.GetAsync(link);
+            string title = video.Title;
+
+            string inputStream = "C:\\Users\\drepa\\Projects\\YouTube-Downloader\\bin\\Debug\\net7.0-windows\\Rack Me, Rack Me.mp4";
+            string auioFile = "C:\\Users\\drepa\\Projects\\YouTube-Downloader\\bin\\Debug\\net7.0-windows\\Rack Me, Rack Me.webm";
+            string outputStream = "C:\\Users\\drepa\\Projects\\YouTube-Downloader\\test\\new.mp4";
 
 
             if (audio_radiobutton.IsChecked == true)
@@ -43,15 +47,20 @@ namespace YouTube_Downloader
                 var streamManifest = await youtube.Videos.Streams.GetManifestAsync(link);
                 var streamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
                 var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
-                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"test/{title}.{streamInfo.Container}");
+                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{title}.{streamInfo.Container}");
+                MessageBox.Show("Download Complete");
+            }
+            else if (video_radiobuttton.IsChecked == true)
+            {
+                var streamManifest = await youtube.Videos.Streams.GetManifestAsync(link);
+                var streamInfo = streamManifest
+                    .GetVideoOnlyStreams()
+                    .Where(s => s.Container == Container.Mp4)
+                    .GetWithHighestVideoQuality();
+                var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
+                await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{title}.{streamInfo.Container}");
 
-                FFMpegArguments
-                    .FromFileInput($"test/{title}.{streamInfo.Container}")
-                    .OutputToFile($"test/{title}.{streamInfo.Container}", false, options => options
-                        .WithAudioCodec(AudioCodec.Aac)
-                        .WithVariableBitrate(4)
-                        .WithFastStart())
-                    .ProcessSynchronously();
+                FFMpeg.ReplaceAudio(inputStream, auioFile, outputStream);
 
                 MessageBox.Show("Download Complete");
             }
