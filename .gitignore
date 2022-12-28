@@ -6,7 +6,9 @@
 #User-specific folders
 Resources
 test
-
+*.mp3
+*.mp4
+*.webm
 # User-specific files
 *.rsuser
 *.suo
