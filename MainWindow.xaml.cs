@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
+using FFMpegCore;
+using FFMpegCore.Enums;
 
 namespace YouTube_Downloader
 {
@@ -41,9 +44,17 @@ namespace YouTube_Downloader
                 var streamInfo = streamManifest.GetAudioOnlyStreams().GetWithHighestBitrate();
                 var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
                 await youtube.Videos.Streams.DownloadAsync(streamInfo, $"test/{title}.{streamInfo.Container}");
-            }
 
-            MessageBox.Show("Download Complete");
+                FFMpegArguments
+                    .FromFileInput($"test/{title}.{streamInfo.Container}")
+                    .OutputToFile($"test/{title}.{streamInfo.Container}", false, options => options
+                        .WithAudioCodec(AudioCodec.Aac)
+                        .WithVariableBitrate(4)
+                        .WithFastStart())
+                    .ProcessSynchronously();
+
+                MessageBox.Show("Download Complete");
+            }
         }
     }
 }
