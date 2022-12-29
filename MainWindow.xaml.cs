@@ -21,6 +21,7 @@ using System.Threading;
 using System.Drawing;
 using System.Windows.Media.Animation;
 using AngleSharp.Text;
+using System.Windows.Markup;
 //  https://www.youtube.com/watch?v=YgZjL1Go4uE&list=RDGMEMCMFH2exzjBeE_zAHHJOdxg&start_radio=1&rv=bwW7ni0aTOE
 namespace YouTube_Downloader
 {
@@ -33,25 +34,45 @@ namespace YouTube_Downloader
         {
             InitializeComponent();
         }
+
+        private void FileSaveDialog(object sender)
+        {
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "Document"; // Default file name
+            dlg.DefaultExt = ".txt"; // Default file extension
+            dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+            }
+        }   
+
         private void ErrorChecks(object sender)
         {
             if (url.Text == "")
             {
                 MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
             }
             else if (AudioRadioButton.IsChecked != true && VideoRadioButton.IsChecked != true && BothRadioButton.IsChecked != true)
             {
                 MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-
             }
         }
 
-        private void FileSaveDialog(object sender)
+        private async void VideoInformation(object sender, string url)
         {
-
+            var youtube = new YoutubeClient();
+            var video = await youtube.Videos.GetAsync(url);
         }
 
-        private static async void DownloadAudio(string url)
+        private async void DownloadAudio(string url)
         {
             var youtube = new YoutubeClient();
             var video = await youtube.Videos.GetAsync(url);
@@ -73,6 +94,7 @@ namespace YouTube_Downloader
             var youtube = new YoutubeClient();
             var video = await youtube.Videos.GetAsync(url);
             string video_title = video.Title;
+            var test = video.Engagement;
 
             var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
             var streamInfo = streamManifest
@@ -82,7 +104,7 @@ namespace YouTube_Downloader
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
             await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{video_title}.{streamInfo.Container}");
 
-            FFMpeg.ReplaceAudio($"{video_title}.{streamInfo.Container}", $"{video_title}.webm", "conv.mp4");
+            FFMpeg.ReplaceAudio($"{video_title}.mp4 ", $"{video_title}.webm", "conv.mp4");
 
             if (BothRadioButton.IsChecked != true)
             {
@@ -96,21 +118,7 @@ namespace YouTube_Downloader
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             ErrorChecks(true);
-
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "Document"; // Default file name
-            dlg.DefaultExt = ".txt"; // Default file extension
-            dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
-
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {
-                // Save document
-                string filename = dlg.FileName;
-            }
+            VideoInformation(true, url.Text);
 
             if (AudioRadioButton.IsChecked == true)
             {
