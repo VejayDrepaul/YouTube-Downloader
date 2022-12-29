@@ -45,6 +45,12 @@ namespace YouTube_Downloader
 
             }
         }
+
+        private void FileSaveDialog(object sender)
+        {
+
+        }
+
         private static async void DownloadAudio(string url)
         {
             var youtube = new YoutubeClient();
@@ -59,6 +65,7 @@ namespace YouTube_Downloader
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
             await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{video_title}.{streamInfo.Container}");
         }
+
         private async void DownloadVideoAndAudio(object sender, string url)
         {
             DownloadAudio(url);
@@ -85,6 +92,7 @@ namespace YouTube_Downloader
 
             MessageBox.Show("Download Complete");
         }
+
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             ErrorChecks(true);
