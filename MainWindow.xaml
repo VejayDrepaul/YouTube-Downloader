@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:YouTube_Downloader"
         mc:Ignorable="d"
         Title="YouTube Downloader" Height="300" Width="600"
-        ResizeMode="CanMinimize" Icon="/icon.png">
+        ResizeMode="CanMinimize" Icon="Resources/icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="180" />
