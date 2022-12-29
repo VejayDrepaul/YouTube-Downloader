@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:YouTube_Downloader"
         mc:Ignorable="d"
-        Title="YouTube Downloader" Height="300" Width="600"
+        Title="YouTube Downloader" Height="400" Width="600"
         ResizeMode="CanMinimize" Icon="Resources/icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -14,6 +14,7 @@
             <ColumnDefinition Width="180" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
             <RowDefinition Height="100" />
             <RowDefinition Height="100" />
             <RowDefinition Height="100" />
@@ -27,15 +28,26 @@
         <Label Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Center" Margin="0,89,0,18" 
                Content="Select what you want to download:"/>
 
-        <RadioButton x:Name="video_radiobuttton" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" 
+        <RadioButton x:Name="VideoRadioButton" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" 
                      VerticalAlignment="Center" Content="Video" />
-        <RadioButton x:Name="audio_radiobutton" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" 
+        <RadioButton x:Name="AudioRadioButton" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" 
                      VerticalAlignment="Center" Content="Audio" />
-        <RadioButton x:Name="both_radiobutton" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" 
+        <RadioButton x:Name="BothRadioButton" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" 
                      VerticalAlignment="Center" Content="Audio and Video" />
 
-        <Button x:Name="download_button" Grid.Column="1" Grid.Row="2" Width="124" Height="40"
+        <Label x:Name="InfoLabel" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"
+               VerticalAlignment="Bottom" Content="Video Information: "/>
+        <Label x:Name="VideoTitle" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"
+               VerticalAlignment="Top" Content="Title: "/>
+        <Label x:Name="VideoDuration" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"
+               VerticalAlignment="Bottom" Content="Duration: "/>
+        <Label x:Name="VideoAuthor" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"
+               VerticalAlignment="Center" Content="Author: "/>
+
+
+
+        <Button x:Name="DownloadButton" Grid.Column="1" Grid.Row="3" Width="124" Height="40"
                 HorizontalAlignment="Center" VerticalAlignment="Top" Content="Download" 
-                Click="download_button_Click" />
+                Click="DownloadButton_Click" />
     </Grid>
 </Window>
