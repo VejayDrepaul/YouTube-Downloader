@@ -33,6 +33,18 @@ namespace YouTube_Downloader
         {
             InitializeComponent();
         }
+        private void ErrorChecks(object sender)
+        {
+            if (url.Text == "")
+            {
+                MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            else if (audio_radiobutton.IsChecked != true && video_radiobuttton.IsChecked != true && both_radiobutton.IsChecked != true)
+            {
+                MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+            }
+        }
 
         private static async void DownloadAudio(string url)
         {
@@ -78,16 +90,9 @@ namespace YouTube_Downloader
 
         private void download_button_Click(object sender, RoutedEventArgs e)
         {
-            if (url.Text == "")
-            {
-                MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-            else if (audio_radiobutton.IsChecked != true && video_radiobuttton.IsChecked != true && both_radiobutton.IsChecked != true) 
-            {
-                MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            ErrorChecks(true);
 
-            }
-            else if (audio_radiobutton.IsChecked == true)
+            if (audio_radiobutton.IsChecked == true)
             {
                 DownloadAudio(url.Text);
                 MessageBox.Show("Download Complete");
