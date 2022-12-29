@@ -39,13 +39,12 @@ namespace YouTube_Downloader
             {
                 MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
-            else if (audio_radiobutton.IsChecked != true && video_radiobuttton.IsChecked != true && both_radiobutton.IsChecked != true)
+            else if (AudioRadioButton.IsChecked != true && VideoRadioButton.IsChecked != true && BothRadioButton.IsChecked != true)
             {
                 MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
             }
         }
-
         private static async void DownloadAudio(string url)
         {
             var youtube = new YoutubeClient();
@@ -60,7 +59,6 @@ namespace YouTube_Downloader
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
             await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{video_title}.{streamInfo.Container}");
         }
-
         private async void DownloadVideoAndAudio(object sender, string url)
         {
             DownloadAudio(url);
@@ -79,7 +77,7 @@ namespace YouTube_Downloader
 
             FFMpeg.ReplaceAudio($"{video_title}.{streamInfo.Container}", $"{video_title}.webm", "conv.mp4");
 
-            if (both_radiobutton.IsChecked != true)
+            if (BothRadioButton.IsChecked != true)
             {
                 File.Delete($"{video_title}.webm");
                 File.Delete($"{video_title}.mp4");
@@ -87,21 +85,35 @@ namespace YouTube_Downloader
 
             MessageBox.Show("Download Complete");
         }
-
-        private void download_button_Click(object sender, RoutedEventArgs e)
+        private void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             ErrorChecks(true);
 
-            if (audio_radiobutton.IsChecked == true)
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "Document"; // Default file name
+            dlg.DefaultExt = ".txt"; // Default file extension
+            dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+            }
+
+            if (AudioRadioButton.IsChecked == true)
             {
                 DownloadAudio(url.Text);
                 MessageBox.Show("Download Complete");
             }
-            else if (video_radiobuttton.IsChecked == true)
+            else if (VideoRadioButton.IsChecked == true)
             {
                 DownloadVideoAndAudio(true, url.Text);
             }
-            else if (both_radiobutton.IsChecked == true)
+            else if (BothRadioButton.IsChecked == true)
             {
                 DownloadVideoAndAudio(true, url.Text);
             }
