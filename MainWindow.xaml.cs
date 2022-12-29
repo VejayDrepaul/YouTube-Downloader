@@ -41,7 +41,8 @@ namespace YouTube_Downloader
             string video_title = video.Title;
 
             var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
-            var streamInfo = streamManifest.GetAudioOnlyStreams()
+            var streamInfo = streamManifest
+                .GetAudioOnlyStreams()
                 .Where(s => s.Container == Container.WebM)
                 .GetWithHighestBitrate();
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
@@ -77,7 +78,16 @@ namespace YouTube_Downloader
 
         private void download_button_Click(object sender, RoutedEventArgs e)
         {
-            if (audio_radiobutton.IsChecked == true)
+            if (url.Text == "")
+            {
+                MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+            else if (audio_radiobutton.IsChecked != true && video_radiobuttton.IsChecked != true && both_radiobutton.IsChecked != true) 
+            {
+                MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+            }
+            else if (audio_radiobutton.IsChecked == true)
             {
                 DownloadAudio(url.Text);
                 MessageBox.Show("Download Complete");
@@ -88,18 +98,8 @@ namespace YouTube_Downloader
             }
             else if (both_radiobutton.IsChecked == true)
             {
-                DownloadVideoAndAudio(false, url.Text);
+                DownloadVideoAndAudio(true, url.Text);
             }
-        }
-
-        private void path_button_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new Microsoft.Win32.SaveFileDialog();
-            dialog.FileName = "Document"; // Default file name
-            dialog.DefaultExt = ".mp3"; // Default file extension
-            dialog.Filter = "MP3 Files (.mp3)|*.mp3"; // Filter files by extension
-
-            bool? result = dialog.ShowDialog();
         }
     }
 }
