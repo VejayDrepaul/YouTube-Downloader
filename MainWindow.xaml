@@ -38,11 +38,11 @@
         <Label x:Name="InfoLabel" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center"
                VerticalAlignment="Bottom" Content="Video Information: "/>
         <Label x:Name="VideoTitle" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"
-               VerticalAlignment="Top" Content="Title: "/>
+               VerticalAlignment="Top" Content=""/>
         <Label x:Name="VideoDuration" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"
-               VerticalAlignment="Bottom" Content="Duration: "/>
+               VerticalAlignment="Bottom" Content=""/>
         <Label x:Name="VideoAuthor" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left"
-               VerticalAlignment="Center" Content="Author: "/>
+               VerticalAlignment="Center" Content=""/>
 
 
 
