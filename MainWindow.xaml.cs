@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Windows.Media.Animation;
 using AngleSharp.Text;
 using System.Windows.Markup;
+using Microsoft.Win32;
 //  https://www.youtube.com/watch?v=YgZjL1Go4uE&list=RDGMEMCMFH2exzjBeE_zAHHJOdxg&start_radio=1&rv=bwW7ni0aTOE
 namespace YouTube_Downloader
 {
@@ -34,24 +35,6 @@ namespace YouTube_Downloader
         {
             InitializeComponent();
         }
-
-        private void FileSaveDialog(object sender)
-        {
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "Document"; // Default file name
-            dlg.DefaultExt = ".txt"; // Default file extension
-            dlg.Filter = "Text documents (.txt)|*.txt"; // Filter files by extension
-
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {
-                // Save document
-                string filename = dlg.FileName;
-            }
-        }   
 
         private void ErrorChecks(object sender)
         {
@@ -70,9 +53,14 @@ namespace YouTube_Downloader
         {
             var youtube = new YoutubeClient();
             var video = await youtube.Videos.GetAsync(url);
+
+            VideoTitle.Content = $"Title: {video.Title}";
+            VideoAuthor.Content = $"Author: {video.Author}";
+            VideoDuration.Content = $"Duration: {video.Duration}";
+
         }
 
-        private async void DownloadAudio(string url)
+        private async void DownloadAudio(string url, string path)
         {
             var youtube = new YoutubeClient();
             var video = await youtube.Videos.GetAsync(url);
@@ -84,12 +72,12 @@ namespace YouTube_Downloader
                 .Where(s => s.Container == Container.WebM)
                 .GetWithHighestBitrate();
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
-            await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{video_title}.{streamInfo.Container}");
+            await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{path}\\{video_title}.{streamInfo.Container}");
         }
 
-        private async void DownloadVideoAndAudio(object sender, string url)
+        private async void DownloadVideoAndAudio(object sender, string url, string path)
         {
-            DownloadAudio(url);
+            DownloadAudio(url, path);
 
             var youtube = new YoutubeClient();
             var video = await youtube.Videos.GetAsync(url);
@@ -102,17 +90,17 @@ namespace YouTube_Downloader
                 .Where(s => s.Container == Container.Mp4)
                 .GetWithHighestVideoQuality();
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
-            await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{video_title}.{streamInfo.Container}");
+            await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{path}\\{video_title}.{streamInfo.Container}");
 
-            FFMpeg.ReplaceAudio($"{video_title}.mp4 ", $"{video_title}.webm", "conv.mp4");
+            FFMpeg.ReplaceAudio($"{path}\\{video_title}.mp4 ", $"{path}\\{video_title}.webm", $"{path}\\conv.mp4");
 
             if (BothRadioButton.IsChecked != true)
             {
-                File.Delete($"{video_title}.webm");
-                File.Delete($"{video_title}.mp4");
+                File.Delete($"{path}\\{video_title}.webm");
+                File.Delete($"{path}\\{video_title}.mp4");
             }
 
-            MessageBox.Show("Download Complete");
+            MessageBox.Show("Download Complete", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
@@ -120,18 +108,25 @@ namespace YouTube_Downloader
             ErrorChecks(true);
             VideoInformation(true, url.Text);
 
-            if (AudioRadioButton.IsChecked == true)
+            var dialog = new Ookii.Dialogs.Wpf.VistaFolderBrowserDialog();          
+
+            if (dialog.ShowDialog(this).GetValueOrDefault())  
             {
-                DownloadAudio(url.Text);
-                MessageBox.Show("Download Complete");
-            }
-            else if (VideoRadioButton.IsChecked == true)
-            {
-                DownloadVideoAndAudio(true, url.Text);
-            }
-            else if (BothRadioButton.IsChecked == true)
-            {
-                DownloadVideoAndAudio(true, url.Text);
+                string FilePath = dialog.SelectedPath;
+
+                if (AudioRadioButton.IsChecked == true)
+                {
+                    DownloadAudio(url.Text, FilePath);
+                    MessageBox.Show("Download Complete", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                }
+                else if (VideoRadioButton.IsChecked == true)
+                {
+                    DownloadVideoAndAudio(true, url.Text, FilePath);
+                }
+                else if (BothRadioButton.IsChecked == true)
+                {
+                    DownloadVideoAndAudio(true, url.Text, FilePath);
+                }
             }
         }
     }
