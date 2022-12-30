@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="FFMpegCore" Version="4.8.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="YoutubeExplode" Version="6.2.5" />
   </ItemGroup>
 
