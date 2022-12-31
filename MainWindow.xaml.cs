@@ -14,16 +14,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using YoutubeExplode;
-using YoutubeExplode.Videos.Streams;
-using FFMpegCore;
 using System.Threading;
 using System.Drawing;
 using System.Windows.Media.Animation;
 using AngleSharp.Text;
 using System.Windows.Markup;
 using Microsoft.Win32;
-//  https://www.youtube.com/watch?v=YgZjL1Go4uE&list=RDGMEMCMFH2exzjBeE_zAHHJOdxg&start_radio=1&rv=bwW7ni0aTOE
+using YoutubeExplode;
+using YoutubeExplode.Videos.Streams;
+using FFMpegCore;
+using System.Text.RegularExpressions;
+using FFMpegCore.Enums;
+
 namespace YouTube_Downloader
 {
     /// <summary>
@@ -40,12 +42,12 @@ namespace YouTube_Downloader
         {
             if (url.Text == "")
             {
-                MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("YOU MUST ENETER A LINK TO A YOUTUBE VIDEO", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Error);
 
             }
             else if (AudioRadioButton.IsChecked != true && VideoRadioButton.IsChecked != true && BothRadioButton.IsChecked != true)
             {
-                MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                MessageBox.Show("YOU MUST SELECT WHAT YOU WANT TO DOWNLOAD: VIDEO, AUDIO, OR BOTH", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -73,6 +75,17 @@ namespace YouTube_Downloader
                 .GetWithHighestBitrate();
             var stream = await youtube.Videos.Streams.GetAsync(streamInfo);
             await youtube.Videos.Streams.DownloadAsync(streamInfo, $"{path}\\{video_title}.{streamInfo.Container}");
+
+            await FFMpegArguments
+                .FromFileInput($"{path}\\{video_title}.{streamInfo.Container}")
+                .OutputToFile($"{path}\\{video_title}.mp3", false, options => options
+                    .WithAudioCodec(AudioCodec.LibMp3Lame))
+                .ProcessAsynchronously();
+
+            if (AudioRadioButton.IsChecked == true)
+            {
+                File.Delete($"{path}\\{video_title}.{streamInfo.Container}");
+            }
         }
 
         private async void DownloadVideoAndAudio(object sender, string url, string path)
@@ -100,7 +113,7 @@ namespace YouTube_Downloader
                 File.Delete($"{path}\\{video_title}.mp4");
             }
 
-            MessageBox.Show("Download Complete", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            MessageBox.Show("Download Complete", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
@@ -117,7 +130,7 @@ namespace YouTube_Downloader
                 if (AudioRadioButton.IsChecked == true)
                 {
                     DownloadAudio(url.Text, FilePath);
-                    MessageBox.Show("Download Complete", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    MessageBox.Show("Download Complete", "ATTENTION!", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 else if (VideoRadioButton.IsChecked == true)
                 {
